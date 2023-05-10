@@ -1,0 +1,49 @@
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
+mapper代理开发时将namespace指定为mapper接口的全限定名  
+ -->
+<mapper namespace="com.chengxusheji.mapper.RoomInfoMapper"> 
+<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
+mapper.xml以statement为单位管理sql语句  
+ -->
+	<!-- 添加房间信息记录 -->
+	<insert id="addRoomInfo" parameterType="roomInfo">
+		insert into t_roomInfo(buildingObj,roomName,roomTypeName,roomPrice,totalBedNumber,leftBedNum,roomTelephone,roomMemo) values 
+		(#{buildingObj.buildingId},#{roomName},#{roomTypeName},#{roomPrice},#{totalBedNumber},#{leftBedNum},#{roomTelephone},#{roomMemo})
+	</insert>
+
+	<!-- 按照查询条件分页查询房间信息记录 -->
+	<select id="queryRoomInfo" resultMap="roomInfoMap" >
+		select t_roomInfo.* from t_roomInfo,t_buildingInfo ${where} and t_roomInfo.buildingObj = t_buildingInfo.buildingId limit #{startIndex},#{pageSize}
+	</select>
+	<resultMap id="roomInfoMap" type="roomInfo">
+        <id property="roomId" column="roomId" />
+        <association property="buildingObj" column="buildingObj" select="com.chengxusheji.mapper.BuildingInfoMapper.getBuildingInfo" />
+    </resultMap>
+
+    <!-- 按照查询条件查询所有房间信息记录 -->
+	<select id="queryRoomInfoList" resultMap="roomInfoMap" >
+		select t_roomInfo.* from t_roomInfo,t_buildingInfo ${where} and t_roomInfo.buildingObj = t_buildingInfo.buildingId
+	</select>
+
+    <!-- 按照查询条件的房间信息记录数 -->
+	<select id="queryRoomInfoCount" resultType="int">
+		select count(*) from t_roomInfo,t_buildingInfo ${where} and t_roomInfo.buildingObj = t_buildingInfo.buildingId
+	</select>
+
+	<!-- 根据主键查询某个房间信息记录 -->
+	<select id="getRoomInfo" parameterType="int" resultMap="roomInfoMap">
+		select * from t_roomInfo where t_roomInfo.roomId = #{roomId}
+	</select>
+
+	<!-- 更新房间信息记录 -->
+	<update id="updateRoomInfo" parameterType="roomInfo">
+		update t_roomInfo set buildingObj=#{buildingObj.buildingId},roomName=#{roomName},roomTypeName=#{roomTypeName},roomPrice=#{roomPrice},totalBedNumber=#{totalBedNumber},leftBedNum=#{leftBedNum},roomTelephone=#{roomTelephone},roomMemo=#{roomMemo} where roomId = #{roomId}
+	</update>
+
+	<!-- 删除房间信息记录 -->
+	<delete id="deleteRoomInfo" parameterType="int">
+		delete from t_roomInfo where roomId=#{roomId}
+	</delete>
+
+</mapper>

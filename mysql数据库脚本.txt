@@ -1,0 +1,102 @@
+-- phpMyAdmin SQL Dump
+-- version 3.0.1.1
+-- http://www.phpmyadmin.net
+--
+-- 服务器版本: 5.1.29
+-- PHP 版本: 5.2.6
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+-- --------------------------------------------------------
+
+-- ----------------------------
+-- Table structure for `admin`
+-- ----------------------------
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE `admin` (
+  `username` varchar(20) NOT NULL DEFAULT '',
+  `password` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_admin
+-- ----------------------------
+INSERT INTO `admin` VALUES ('a', 'a'); 
+
+CREATE TABLE IF NOT EXISTS `t_classInfo` (
+  `classNo` varchar(20)  NOT NULL COMMENT 'classNo',
+  `className` varchar(20)  NOT NULL COMMENT '班级名称',
+  `banzhuren` varchar(20)  NULL COMMENT '班主任姓名',
+  `beginDate` varchar(20)  NULL COMMENT '成立日期',
+  PRIMARY KEY (`classNo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `t_student` (
+  `studentNumber` varchar(20)  NOT NULL COMMENT 'studentNumber',
+  `studentName` varchar(20)  NOT NULL COMMENT '姓名',
+  `sex` varchar(2)  NOT NULL COMMENT '性别',
+  `classInfoId` varchar(20)  NOT NULL COMMENT '所在班级',
+  `birthday` varchar(20)  NULL COMMENT '出生日期',
+  `zzmm` varchar(20)  NULL COMMENT '政治面貌',
+  `telephone` varchar(20)  NULL COMMENT '联系电话',
+  `address` varchar(60)  NULL COMMENT '家庭地址',
+  `studentPhoto` varchar(60)  NOT NULL COMMENT '学生照片',
+  PRIMARY KEY (`studentNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `t_buildingInfo` (
+  `buildingId` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `areaObj` varchar(20)  NOT NULL COMMENT '所在校区',
+  `buildingName` varchar(20)  NOT NULL COMMENT '宿舍名称',
+  `manageMan` varchar(20)  NULL COMMENT '管理员',
+  `telephone` varchar(20)  NULL COMMENT '门卫电话',
+  PRIMARY KEY (`buildingId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `t_roomInfo` (
+  `roomId` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `buildingObj` int(11) NOT NULL COMMENT '所在宿舍',
+  `roomName` varchar(20)  NOT NULL COMMENT '房间名称',
+  `roomTypeName` varchar(20)  NOT NULL COMMENT '房间类型',
+  `roomPrice` float NOT NULL COMMENT '房间价格(元/月)',
+  `totalBedNumber` int(11) NOT NULL COMMENT '总床位',
+  `leftBedNum` int(11) NOT NULL COMMENT '剩余床位',
+  `roomTelephone` varchar(20)  NULL COMMENT '寝室电话',
+  `roomMemo` varchar(200)  NULL COMMENT '附加信息',
+  PRIMARY KEY (`roomId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `t_liveInfo` (
+  `liveInfoId` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `studentObj` varchar(20)  NOT NULL COMMENT '学生',
+  `roomObj` int(11) NOT NULL COMMENT '所在房间',
+  `liveDate` varchar(20)  NULL COMMENT '入住日期',
+  `liveMemo` varchar(200)  NULL COMMENT '附加信息',
+  PRIMARY KEY (`liveInfoId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `t_intoType` (
+  `typeId` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `infoTypeName` varchar(20)  NOT NULL COMMENT '信息类别',
+  PRIMARY KEY (`typeId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS `t_newsInfo` (
+  `newsId` int(11) NOT NULL AUTO_INCREMENT COMMENT '记录编号',
+  `roomObj` int(11) NOT NULL COMMENT '寝室房间',
+  `infoTypeObj` int(11) NOT NULL COMMENT '信息类型',
+  `infoTitle` varchar(20)  NOT NULL COMMENT '信息标题',
+  `infoContent` varchar(300)  NOT NULL COMMENT '信息内容',
+  `infoDate` varchar(20)  NULL COMMENT '信息日期',
+  PRIMARY KEY (`newsId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+ALTER TABLE t_student ADD CONSTRAINT FOREIGN KEY (classInfoId) REFERENCES t_classInfo(classNo);
+ALTER TABLE t_roomInfo ADD CONSTRAINT FOREIGN KEY (buildingObj) REFERENCES t_buildingInfo(buildingId);
+ALTER TABLE t_liveInfo ADD CONSTRAINT FOREIGN KEY (studentObj) REFERENCES t_student(studentNumber);
+ALTER TABLE t_liveInfo ADD CONSTRAINT FOREIGN KEY (roomObj) REFERENCES t_roomInfo(roomId);
+ALTER TABLE t_newsInfo ADD CONSTRAINT FOREIGN KEY (roomObj) REFERENCES t_roomInfo(roomId);
+ALTER TABLE t_newsInfo ADD CONSTRAINT FOREIGN KEY (infoTypeObj) REFERENCES t_intoType(typeId);
+
+
